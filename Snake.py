@@ -1,5 +1,6 @@
 import sys
 import curses
+import random
 
 def main(stdscr):
     stdscr.clear()
@@ -8,75 +9,108 @@ def main(stdscr):
     stdscr.nodelay(True)
     stdscr.timeout(150)
     max_y, max_x = stdscr.getmaxyx()
+    grow = False
 
-    dx = 0
+    dx = 1
     dy = 0
 
     def render():
         for y, x in head:
             stdscr.addch(y, x, '#')
-        stdscr.refresh()
 
-    stdscr.addstr(0, 0, 'snake by chuh and ric')
-    stdscr.refresh()
+    def respawn_apple():
+        while True:
+            y = random.randint(0, height - 1)
+            x = random.randint(0, width - 1)
+            if (y, x) not in head:
+                return y, x
 
-    stdscr.nodelay(False)
-
-    curses.echo()
-
-    stdscr.addstr(1, 0, 'How wide do you want the map to be?')
-    stdscr.refresh()
-    width = int(stdscr.getstr().decode())
-
-    stdscr.refresh()
-
-    stdscr.addstr(2, 0, 'How tall do you want the map to be?')
-    stdscr.refresh()
-    height = int(stdscr.getstr().decode())
-
-    curses.noecho()
+    height, width = 50, 100
 
     head = [(int(height / 2 + 1), int(width / 2 + 1)), (int(height / 2 + 1), int(width / 2)), (int(height / 2 + 1), int(width / 2 - 1))]
 
-    stdscr.nodelay(True)
+    class Apple:
+        def __init__(self, y, x):
+            self.y = y
+            self.x = x
+    
+    appies = []
 
-    for i in range(height):
-        for j in range(width):
-            stdscr.addch(i, j, '.')
-    stdscr.refresh()
-
-    render()
-    stdscr.refresh()
+    for k in range(15):
+        appies.append(
+            Apple(
+                random.randint(0, height - 1),
+                random.randint(0, width - 1)
+            )
+        )
 
     while True:
-        stdscr.addstr(height + 1, 0, 'Which direction would you like to move? (WASD)')
         mov = stdscr.getch()
 
         if mov == ord('w'):
-            stdscr.addch(head[0][0], head[0][1], '.')
             dx, dy = 0, -1
         elif mov == ord('a'):
-            stdscr.addch(head[0][0], head[0][1], '.')
             dx, dy = -1, 0
         elif mov == ord('s'):
-            stdscr.addch(head[0][0], head[0][1], '.')
-            dx, dy = 0, +1
+            dx, dy = 0, 1
         elif mov == ord('d'):
-            stdscr.addch(head[0][0], head[0][1],  '.')
-            dx, dy = +1, 0
+            dx, dy = 1, 0
         elif mov == ord('e'):
             sys.exit()
 
-        new_head = (head[0][0] + dy, head[0][1] + dx)
+        new_y = head[0][0] + dy
+        new_x = head[0][1] + dx
 
-        if new_head[0] < 0 or new_head[0] >= height or new_head[1] < 0 or new_head[1] >= width:
-            stdscr.addstr(max_y - 1, 0, 'Game Over!! (Press any key)')
+        new_head = (new_y, new_x)
+        tail = head[-1]
+
+        if (
+            new_y < 0 or new_y >= height or
+            new_x < 0 or new_x >= width
+        ):
+            stdscr.addstr(height - 1, 0, 'Game Over!!')
+            stdscr.refresh()
+            stdscr.getch()
+            sys.exit()
+            
+        if new_head in head[:-1]:
+            stdscr.addstr(height - 1, 0, "Game Over!!")
             stdscr.refresh()
             stdscr.getch()
             sys.exit()
 
-        head.insert(0, new_head)
-        head.pop()
+        for apple in appies:
+            if (new_y, new_x) == (apple.y, apple.x):
+                grow = True
+                apple.y, apple.x = respawn_apple()
+                break
+            
+
+        head.insert(0, (new_y, new_x))
+
+        if not grow:
+            head.pop()
+        else:
+            grow = False
         
+        stdscr.clear()
+
+        for i in range(min(height, max_y)):
+            for j in range(min(width, max_x)):
+                try:
+                    stdscr.addch(i, j, '.')
+                except curses.error:
+                    pass
+
+        for apple in appies:
+            try:
+                stdscr.addch(apple.y, apple.x, 'o')
+            except curses.error:
+                pass
+                
         render()
+        
+        stdscr.addstr(0, 0, 'Move: WASD')
+
+        stdscr.refresh()
 curses.wrapper(main)
