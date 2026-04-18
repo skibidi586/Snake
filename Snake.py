@@ -3,6 +3,7 @@ import curses
 import random
 
 def main(stdscr):
+    curses.curs_set(0)
     stdscr.clear()
     curses.cbreak()
     stdscr.keypad(True)
@@ -26,6 +27,7 @@ def main(stdscr):
                 return y, x
 
     height, width = 50, 100
+    playable_area = width * height
 
     head = [(int(height / 2 + 1), int(width / 2 + 1)), (int(height / 2 + 1), int(width / 2)), (int(height / 2 + 1), int(width / 2 - 1))]
 
@@ -68,17 +70,29 @@ def main(stdscr):
             new_y < 0 or new_y >= height or
             new_x < 0 or new_x >= width
         ):
+            stdscr.clear()
             stdscr.addstr(height - 1, 0, 'Game Over!!')
             stdscr.refresh()
             stdscr.getch()
             sys.exit()
             
         if new_head in head[:-1]:
-            stdscr.addstr(height - 1, 0, "Game Over!!")
+            stdscr.clear()
+            stdscr.addstr(height - 1, 0, 'Game Over!!')
             stdscr.refresh()
             stdscr.getch()
             sys.exit()
-
+        
+        occupied = set(head)
+        free_cells = playable_area - len(occupied)
+    
+        if free_cells == 0:
+            stdscr.clear()
+            stdscr.addstr(height - 1, 0, 'You win!!')
+            stdscr.refresh()
+            stdscr.getch()
+            sys.exit()
+        
         for apple in appies:
             if (new_y, new_x) == (apple.y, apple.x):
                 grow = True
@@ -110,7 +124,5 @@ def main(stdscr):
                 
         render()
         
-        stdscr.addstr(0, 0, 'Move: WASD')
-
         stdscr.refresh()
 curses.wrapper(main)
