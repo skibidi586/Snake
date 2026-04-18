@@ -1,7 +1,8 @@
-A game based off of google snake curently still in the works.
+# TERMINAL SNAKE
 
-New features
+- A snake game based in the terminal using the Python curses library.
+- It's essentially the same as every other version of snake to exist, just in the terminal using ASCII art.
+- Can YOU collect the apples?
 
-*map generation of any size 
-
-*player movement via WASD 
+- WASD to move
+- e to exit
