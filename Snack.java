@@ -173,7 +173,7 @@ class Apple {
 	int x;
 	int y;
 
-	Apple(int y, int x) {
+	Apple(int x, int y) {
 		this.x = x;
 		this.y = y;
 	}
