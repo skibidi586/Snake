@@ -11,4 +11,5 @@
 - e to exit
 
 
-- to run the java file first run ```javac -cp lanterna-3.1.1.jar Snack.java``` followed by ```java -cp .:lanterna-3.1.1.jar Snack``` in the terminal and it will run
+- To run the java file first run ```javac -cp lanterna-3.1.1.jar Snack.java``` followed by
+  ```java -cp .:lanterna-3.1.1.jar Snack``` in the terminal and it will run
