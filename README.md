@@ -5,12 +5,10 @@
   - The unique feature of the Java version is that it doesn't include the dot grid to represent the map.
 - It's essentially the same as every other version of snake to exist, just in the terminal using ASCII art.
 - Can YOU collect the apples?
-
 <br>
 
 - WASD to move
 - e to exit
-
 <br>
 
 - To run the java file first run ```javac -cp lanterna-3.1.1.jar Snack.java``` followed by<br>
