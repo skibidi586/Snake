@@ -13,3 +13,4 @@
 
 - To run the java file first run ```javac -cp lanterna-3.1.1.jar Snack.java``` followed by<br>
   ```java -cp .:lanterna-3.1.1.jar Snack``` in the terminal and it will run
+ - To run the python file you can either press the play button or run ```python Snake.py``` in the Terminal.
