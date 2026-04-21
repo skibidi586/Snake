@@ -1,6 +1,7 @@
 import sys
 import curses
 import random
+import time
 
 def main(stdscr):
     curses.curs_set(0)
@@ -17,7 +18,10 @@ def main(stdscr):
 
     def render():
         for y, x in head:
-            stdscr.addch(y, x, '#')
+            try:
+                stdscr.addch(y, x, '#')
+            except curses.error():
+                pass
 
     def respawn_apple():
         while True:
@@ -26,7 +30,7 @@ def main(stdscr):
             if (y, x) not in head:
                 return y, x
 
-    height, width = 50, 100
+    height, width = max_y - 1, max_x - 1
     playable_area = width * height
 
     head = [(int(height / 2 + 1), int(width / 2 + 1)), (int(height / 2 + 1), int(width / 2)), (int(height / 2 + 1), int(width / 2 - 1))]
@@ -71,16 +75,16 @@ def main(stdscr):
             new_x < 0 or new_x >= width
         ):
             stdscr.clear()
-            stdscr.addstr(height - 1, 0, 'Game Over!!')
+            stdscr.addstr(0, 0, 'Game Over!!')
             stdscr.refresh()
-            stdscr.getch()
+            time.sleep(1)
             sys.exit()
             
         if new_head in head[:-1]:
             stdscr.clear()
-            stdscr.addstr(height - 1, 0, 'Game Over!!')
+            stdscr.addstr(0, 0, 'Game Over!!')
             stdscr.refresh()
-            stdscr.getch()
+            time.sleep(1)
             sys.exit()
         
         occupied = set(head)
@@ -88,9 +92,9 @@ def main(stdscr):
     
         if free_cells == 0:
             stdscr.clear()
-            stdscr.addstr(height - 1, 0, 'You win!!')
+            stdscr.addstr(0, 0, 'You win!!')
             stdscr.refresh()
-            stdscr.getch()
+            time.sleep(1)
             sys.exit()
         
         for apple in appies:
@@ -108,13 +112,6 @@ def main(stdscr):
             grow = False
         
         stdscr.clear()
-
-        for i in range(min(height, max_y)):
-            for j in range(min(width, max_x)):
-                try:
-                    stdscr.addch(i, j, '.')
-                except curses.error:
-                    pass
 
         for apple in appies:
             try:
