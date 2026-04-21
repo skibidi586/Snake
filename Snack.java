@@ -4,6 +4,7 @@ import com.googlecode.lanterna.screen.*;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.TextColor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -86,7 +87,7 @@ public class Snack {
 				screen.clear();
 				g.putString(0, 0, "Game Over!!");
 				screen.refresh();
-				Thread.sleep(150);
+				Thread.sleep(1000);
 				System.exit(0);
 			}
 
@@ -95,7 +96,7 @@ public class Snack {
 					screen.clear();
 					g.putString(0, 0, "Game Over!!");
 					screen.refresh();
-					Thread.sleep(150);
+					Thread.sleep(1000);
 					System.exit(0);
 				}
 			}
@@ -107,7 +108,7 @@ public class Snack {
 				screen.clear();
 				g.putString(0, 0, "You win!!");
 				screen.refresh();
-				Thread.sleep(150);
+				Thread.sleep(1000);
 				System.exit(0);
 			}
 
@@ -130,10 +131,13 @@ public class Snack {
 			}
 
 			for (Apple a : appies) {
+				g.setBackgroundColor(TextColor.ANSI.DEFAULT);
+				g.setForegroundColor(TextColor.ANSI.RED);
 				g.putString(a.x, a.y, "o");
 			}
 			
 			render(head, g);
+			g.setBackgroundColor(TextColor.ANSI.DEFAULT);
 
 			screen.refresh();
 			Thread.sleep(150);
@@ -144,7 +148,11 @@ public class Snack {
 		for (TerminalPosition pos : head) {
 			int x = pos.getColumn();
 			int y = pos.getRow();
-			g.putString(x, y, "#");
+			g.setBackgroundColor(TextColor.ANSI.GREEN);
+			g.setForegroundColor(TextColor.ANSI.GREEN);
+			g.putString(x, y, " ");
+			g.setBackgroundColor(TextColor.ANSI.DEFAULT);
+			g.setForegroundColor(TextColor.ANSI.DEFAULT);
 		}
 	}
 
